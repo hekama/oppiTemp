@@ -1,1 +1,917 @@
-[{"id":"e260f5.803eff08","type":"tab","label":"CCT1"},{"id":"32917793.01f558","type":"tab","label":"CCT2"},{"id":"75f57e82.2fa07","type":"tab","label":"Settings"},{"id":"3d1b0f7f.c9b77","type":"tab","label":"Flow 1"},{"id":"63bc4723.d57cb8","type":"ui_base","theme":{"name":"theme-dark","lightTheme":{"default":"#0094CE","baseColor":"#0094CE","baseFont":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif","edited":true,"reset":false},"darkTheme":{"default":"#097479","baseColor":"#489598","baseFont":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif","edited":true,"reset":false},"customTheme":{"name":"","default":"#4B7930","baseColor":"#4B7930","baseFont":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif","reset":false},"themeState":{"base-color":{"default":"#097479","value":"#097479","edited":false},"page-titlebar-backgroundColor":{"value":"#489598","edited":false},"page-backgroundColor":{"value":"#111111","edited":false},"page-sidebar-backgroundColor":{"value":"#ffffff","edited":false},"group-textColor":{"value":"#71b9bc","edited":false},"group-borderColor":{"value":"#555555","edited":false},"group-backgroundColor":{"value":"#333333","edited":false},"widget-textColor":{"value":"#eeeeee","edited":false},"widget-backgroundColor":{"value":"#489598","edited":false},"widget-borderColor":{"value":"#333333","edited":false},"base-font":{"value":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"}}},"site":{"name":"Node-RED Dashboard","hideToolbar":"false","allowSwipe":"true","dateFormat":"DD/MM/YYYY","sizes":{"sx":48,"sy":48,"gx":6,"gy":6,"cx":6,"cy":6,"px":0,"py":0}}},{"id":"5e81b9cf.c41a08","type":"mqtt-broker","z":"","broker":"localhost","port":"1883","clientid":"","usetls":false,"compatmode":true,"keepalive":"60","cleansession":true,"willTopic":"","willQos":"0","willPayload":"","birthTopic":"","birthQos":"0","birthPayload":""},{"id":"4cc72273.8d16bc","type":"ui_group","z":"","name":"CCT1","tab":"ab7d063e.e82818","order":2,"disp":false,"width":"6"},{"id":"77fd3087.0ecbc","type":"ui_group","z":"","name":"Inställningar","tab":"8138ce27.744bf","order":1,"disp":false,"width":"6"},{"id":"8138ce27.744bf","type":"ui_tab","z":"","name":"Settings","icon":"dashboard","order":3},{"id":"ab7d063e.e82818","type":"ui_tab","z":"","name":"CCT1","icon":"dashboard","order":1},{"id":"63acc8c5.34f248","type":"firebase config","z":"","firebaseurl":"templog-98e70","loginType":"email"},{"id":"d7047b1c.27a2d8","type":"ui_chart","z":"e260f5.803eff08","name":"","group":"4cc72273.8d16bc","order":5,"width":"0","height":"0","label":"","chartType":"line","legend":"false","xformat":"D/M-HH:mm","interpolate":"bezier","nodata":"","ymin":"-5","ymax":"50","removeOlder":"5","removeOlderPoints":"1000","removeOlderUnit":"86400","cutout":0,"colors":["#1f77b4","#aec7e8","#ff7f0e","#2ca02c","#98df8a","#d62728","#ff9896","#9467bd","#c5b0d5"],"x":961,"y":112,"wires":[[],[]]},{"id":"3da7110a.9b0f8e","type":"mqtt in","z":"e260f5.803eff08","name":"","topic":"CCT1/cTemp","qos":"2","broker":"5e81b9cf.c41a08","x":110,"y":160,"wires":[["32a719fa.308246","7f2135fa.6a463c","dfdb186b.2807a8","844c6871.6ba7f8"]]},{"id":"844c6871.6ba7f8","type":"ui_gauge","z":"e260f5.803eff08","name":"Ärvärde CCT1","group":"4cc72273.8d16bc","order":4,"width":"0","height":"0","gtype":"gage","title":"","label":"°C","format":"{{value}}","min":"-5","max":"40","colors":["#0000ff","#00ff00","#ff0000"],"seg1":"","seg2":"","x":714,"y":153,"wires":[]},{"id":"214561b8.97dd0e","type":"ui_dropdown","z":"e260f5.803eff08","name":"","label":"Läge","place":"Välj läge","group":"4cc72273.8d16bc","order":1,"width":0,"height":0,"passthru":true,"options":[{"label":"Avstängd","value":0,"type":"num"},{"label":"Jäsning","value":1,"type":"num"},{"label":"Torrhumling","value":2,"type":"num"},{"label":"Lagring","value":3,"type":"num"},{"label":"Kylning","value":4,"type":"num"}],"payload":"","topic":"","x":278,"y":261,"wires":[["631f7735.1f2538","d682a45b.72e048","86c9957a.f4ae08"]]},{"id":"d764b9be.8b1ee8","type":"ui_numeric","z":"e260f5.803eff08","name":"","label":"Börvärde","group":"4cc72273.8d16bc","order":2,"width":0,"height":0,"passthru":true,"topic":"","format":"{{value}} <small>°C</small>","min":"-3","max":"30","step":".1","x":804,"y":255,"wires":[["9396da08.0c6718"]]},{"id":"86c9957a.f4ae08","type":"function","z":"e260f5.803eff08","name":"Sätt standardvärde","func":"var value = msg.payload;\nswitch(value) {\n    case 0:\n        msg.payload = flow.get('curTemp');\n        break;\n    case 1:\n        msg.payload = 22.5;\n        break;\n    case 2:\n        msg.payload = 20.0;\n        break;\n    case 3:\n        msg.payload = 4.0;\n        break;\n    case 4:\n        msg.payload = -1.5;\n        break;\n    default:\n        msg.payload = 127;\n}\nreturn msg;","outputs":1,"noerr":0,"x":491,"y":261,"wires":[["d764b9be.8b1ee8"]]},{"id":"9396da08.0c6718","type":"mqtt out","z":"e260f5.803eff08","name":"CCT1setPoint","topic":"CCT1setPoint","qos":"","retain":"","broker":"5e81b9cf.c41a08","x":1117,"y":343,"wires":[]},{"id":"610eab96.948974","type":"mqtt in","z":"e260f5.803eff08","name":"","topic":"CCT1/setPoint","qos":"2","broker":"5e81b9cf.c41a08","x":120,"y":89,"wires":[["ea81153f.d50768","d764b9be.8b1ee8"]]},{"id":"44852a64.cc6314","type":"ui_switch","z":"e260f5.803eff08","name":"","label":"Konkylning","group":"4cc72273.8d16bc","order":3,"width":0,"height":0,"passthru":true,"decouple":"false","topic":"","style":"","onvalue":"1","onvalueType":"num","onicon":"","oncolor":"","offvalue":"0","offvalueType":"num","officon":"","offcolor":"","x":789,"y":420,"wires":[["abbae3d2.3b7af"]]},{"id":"32a719fa.308246","type":"function","z":"e260f5.803eff08","name":"Autotrigger cone","func":"var autoTrigger = flow.get('autoTrigger')||0;\n\nvar value = msg.payload;\nif (value >= 28 && autoTrigger == 1){\n    msg.payload = 1;\n    }\nreturn msg;","outputs":1,"noerr":0,"x":403,"y":370,"wires":[["44852a64.cc6314"]]},{"id":"abbae3d2.3b7af","type":"mqtt out","z":"e260f5.803eff08","name":"","topic":"CCT1/CONE","qos":"","retain":"","broker":"5e81b9cf.c41a08","x":1111,"y":419,"wires":[]},{"id":"375230c2.9e47a","type":"mqtt in","z":"e260f5.803eff08","name":"","topic":"CCT1/CONE","qos":"2","broker":"5e81b9cf.c41a08","x":94,"y":420,"wires":[["44852a64.cc6314"]]},{"id":"2a844b38.04a294","type":"mqtt in","z":"e260f5.803eff08","name":"","topic":"CCT1/cMode","qos":"2","broker":"5e81b9cf.c41a08","x":91,"y":262,"wires":[["96b95f49.09a49"]]},{"id":"17c535df.77540a","type":"ui_date_picker","z":"e260f5.803eff08","name":"","label":"Dag","group":"4cc72273.8d16bc","order":6,"width":0,"height":0,"passthru":true,"topic":"Lägesjustering","x":300,"y":660,"wires":[["433e554f.d30abc"]]},{"id":"38969739.ada9c8","type":"ui_dropdown","z":"e260f5.803eff08","name":"","label":"Till nytt läge","place":"Välj läge","group":"4cc72273.8d16bc","order":7,"width":0,"height":0,"passthru":true,"options":[{"label":"Avstängd","value":false,"type":"bool"},{"label":"Jäsning","value":1,"type":"num"},{"label":"Torrhumling","value":2,"type":"num"},{"label":"Lagring","value":3,"type":"num"},{"label":"Kylning","value":4,"type":"num"}],"payload":"","topic":"newMode","x":320,"y":580,"wires":[["21c84bb7.e39ba4"]]},{"id":"94641501.8ea888","type":"ui_switch","z":"e260f5.803eff08","name":"","label":"Aktiv","group":"4cc72273.8d16bc","order":9,"width":0,"height":0,"passthru":true,"decouple":"false","topic":"isActive","style":"","onvalue":"true","onvalueType":"bool","onicon":"","oncolor":"green","offvalue":"false","offvalueType":"bool","officon":"","offcolor":"","x":341,"y":540,"wires":[["21c84bb7.e39ba4"]]},{"id":"d682a45b.72e048","type":"function","z":"e260f5.803eff08","name":"Scheduler","func":"var mode = msg.payload;\nvar msg = [];\n\nif(mode === 1){\n    //var t = Date.now() + (24*60*60*1000);\n    var t = Date.now() + 10000;\n    var msg1 = { payload: true };\n    var msg2 = { payload: 1 };\n    var msg3 = { payload: 20};\n    var msg4 = { payload: t };\n    msg = [msg1, msg2, msg3, msg4];\nreturn msg;\n}\n","outputs":"4","noerr":0,"x":100,"y":560,"wires":[["94641501.8ea888"],["38969739.ada9c8"],["6b622234.9ca62c"],["17c535df.77540a"]]},{"id":"6b622234.9ca62c","type":"ui_numeric","z":"e260f5.803eff08","name":"","label":"Till ny temp","group":"4cc72273.8d16bc","order":8,"width":0,"height":0,"passthru":true,"topic":"newTemp","format":"{{value}}<small>°C</small>","min":"-5","max":"100","step":"0.1","x":320,"y":620,"wires":[["21c84bb7.e39ba4"]]},{"id":"631f7735.1f2538","type":"function","z":"e260f5.803eff08","name":"Nollställ konkylning","func":"msg.payload = false;\nreturn msg;","outputs":1,"noerr":0,"x":489,"y":302,"wires":[["44852a64.cc6314"]]},{"id":"433e554f.d30abc","type":"function","z":"e260f5.803eff08","name":"Date ISO format","func":"var timeStamp = msg.payload;\nvar triggerDate = new Date(timeStamp);\nmsg.dates =[];\nmsg.dates.push( triggerDate.toISOString() );\nreturn msg;","outputs":1,"noerr":0,"x":470,"y":660,"wires":[["528bec18.d523f4"]]},{"id":"528bec18.d523f4","type":"calendar-trigger","z":"e260f5.803eff08","name":"Calendar trigger","x":650,"y":660,"wires":[["f961588e.acc6a8","b63852dd.b65f1"]]},{"id":"23f851.c6c2c7b","type":"ui_toast","z":"e260f5.803eff08","position":"top right","displayTime":"30","highlight":"","outputs":0,"ok":"OK","cancel":"","topic":"","name":"","x":1011,"y":660,"wires":[]},{"id":"f961588e.acc6a8","type":"function","z":"e260f5.803eff08","name":"Nice text","func":"var niceText = \"Justerar nu värden för aktuell tank till Jäsning vid \";\nniceText += flow.get('newTemp') + \" °C.\";\nmsg.payload = niceText;\nmsg.topic = \"Justerar automatiskt\"\nreturn msg;","outputs":1,"noerr":0,"x":830,"y":660,"wires":[["23f851.c6c2c7b","3d35300c.c6871"]]},{"id":"21c84bb7.e39ba4","type":"function","z":"e260f5.803eff08","name":"Store all settings in Flow variable","func":"// flow context variable saved as topic name\nflow.set(msg.topic , msg.payload);\nreturn msg;","outputs":1,"noerr":0,"x":610,"y":580,"wires":[[]]},{"id":"b63852dd.b65f1","type":"function","z":"e260f5.803eff08","name":"Trigger change","func":"var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\n\nmsg1.payload = flow.get('newTemp');\nmsg2.payload = flow.get('newMode');\n\nmsg3.payload = false;\nreturn  [msg1, msg2, msg3];","outputs":"3","noerr":0,"x":903,"y":517,"wires":[["9396da08.0c6718"],["e8c9c544.3fbd18"],["94641501.8ea888"]]},{"id":"ea81153f.d50768","type":"function","z":"e260f5.803eff08","name":"Save in Flow variable","func":"var setPoint = msg.payload;\nif(flow.get('newTemp') !== flow.get('setPoint')){\nflow.set('setPoint', setPoint);\n}\nreturn msg;","outputs":1,"noerr":0,"x":492,"y":35,"wires":[[]]},{"id":"e23265db.9c3ae8","type":"file","z":"e260f5.803eff08","name":"Loggfil på hallonpaj Desktop","filename":"/home/pi/Desktop/logfile.txt","appendNewline":true,"createDir":false,"overwriteFile":"false","x":949,"y":53,"wires":[]},{"id":"7f2135fa.6a463c","type":"function","z":"e260f5.803eff08","name":"Data format","func":"var load = msg.payload;\nvar nowDate = new Date();\nmsg.payload = nowDate +\":\"+load;\nreturn msg;","outputs":1,"noerr":0,"x":721,"y":69,"wires":[["e23265db.9c3ae8"]]},{"id":"2909b64e.a8a67a","type":"ui_button","z":"75f57e82.2fa07","name":"","group":"77fd3087.0ecbc","order":0,"width":0,"height":0,"passthru":false,"label":"button","color":"","bgcolor":"","icon":"","payload":"","payloadType":"str","topic":"","x":465,"y":160,"wires":[[]]},{"id":"e8c9c544.3fbd18","type":"mqtt out","z":"e260f5.803eff08","name":"CCT1cMode","topic":"CCT1cMode","qos":"","retain":"","broker":"5e81b9cf.c41a08","x":1112,"y":469,"wires":[]},{"id":"2242dc20.0dfdb4","type":"debug","z":"e260f5.803eff08","name":"","active":true,"console":"false","complete":"false","x":864,"y":182,"wires":[]},{"id":"dfdb186b.2807a8","type":"rbe","z":"e260f5.803eff08","name":"","func":"rbe","gap":"","start":"","inout":"out","x":519,"y":124,"wires":[["72b2a230.d0048c"]]},{"id":"44848913.8760e8","type":"ui_switch","z":"e260f5.803eff08","name":"","label":"Konkylning auto","group":"4cc72273.8d16bc","order":3,"width":0,"height":0,"passthru":true,"decouple":"false","topic":"auto","style":"","onvalue":"true","onvalueType":"bool","onicon":"","oncolor":"","offvalue":"false","offvalueType":"bool","officon":"","offcolor":"","x":219,"y":471,"wires":[["c4be8909.6d8178"]]},{"id":"c4be8909.6d8178","type":"function","z":"e260f5.803eff08","name":"Set flow context autoTrigger","func":"\nflow.set(\"autoTrigger\", msg.payload || false);\n\nreturn msg;","outputs":1,"noerr":0,"x":449,"y":471,"wires":[[]]},{"id":"f976914b.7d953","type":"function","z":"e260f5.803eff08","name":"Error detection","func":"var temperature = msg.payload;\nvar msg1 = {}, msg2 = {};\nmsg.payload = [];\nif (temperature == -127){\n    msg2.payload = \"Kommunikationsproblem med sensor för CCT1\";\n} else {\n    msg1.payload = temperature;\n}\n\nmsg = [msg1, msg2];\n\nreturn msg;","outputs":"2","noerr":0,"x":383,"y":189,"wires":[["2242dc20.0dfdb4"],["9d9ab0c3.20285"]]},{"id":"9d9ab0c3.20285","type":"ui_toast","z":"e260f5.803eff08","position":"top right","displayTime":"30","highlight":"red","outputs":0,"ok":"OK","cancel":"","topic":"","name":"Error","x":854,"y":217,"wires":[]},{"id":"72b2a230.d0048c","type":"function","z":"e260f5.803eff08","name":"Format data for chart","func":"var float = msg.payload;\nmsg.payload = float;\nmsg.data = float;\nmsg.topic =\"CCT1\";\nreturn msg;","outputs":1,"noerr":0,"x":734,"y":113,"wires":[["d7047b1c.27a2d8"]]},{"id":"96b95f49.09a49","type":"function","z":"e260f5.803eff08","name":"Payload to Integer + change detection","func":"var integer = parseInt(msg.payload);\nmsg.payload = integer;\nif(integer !== flow.newMode)\nreturn msg;","outputs":1,"noerr":0,"x":201,"y":330,"wires":[[]]},{"id":"3d35300c.c6871","type":"e-mail","z":"e260f5.803eff08","server":"smtp.gmail.com","port":"465","secure":true,"name":"hekama74@gmail.com","dname":"Gmail send","x":1036,"y":712,"wires":[]}]
+[
+    {
+        "id": "a866b427.05faa8",
+        "type": "tab",
+        "label": "CCT1"
+    },
+    {
+        "id": "92703c3f.cb5dc",
+        "type": "tab",
+        "label": "Settings"
+    },
+    {
+        "id": "ea4f52b5.39a0b",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#489598",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "reset": false
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#489598",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#71b9bc",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#489598",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "da78446e.14f798",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "6e2fed0c.e12e64",
+        "type": "ui_group",
+        "z": "",
+        "name": "CCT1",
+        "tab": "dbb47dcf.43c27",
+        "order": 2,
+        "disp": false,
+        "width": "6"
+    },
+    {
+        "id": "dbb47dcf.43c27",
+        "type": "ui_tab",
+        "z": "",
+        "name": "CCT1",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "8d7ad258.97f53",
+        "type": "ui_chart",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "group": "6e2fed0c.e12e64",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "label": "",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "D/M-HH:mm",
+        "interpolate": "step",
+        "nodata": "",
+        "ymin": "-5",
+        "ymax": "50",
+        "removeOlder": "5",
+        "removeOlderPoints": "1000",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "x": 961,
+        "y": 112,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "c7cf2b66.55f228",
+        "type": "mqtt in",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/cTemp",
+        "qos": "2",
+        "broker": "da78446e.14f798",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "186a417f.e0c73f",
+                "c71399a0.097518",
+                "1f5d44bf.324c8b",
+                "8c2370ad.e44c2",
+                "c40829ff.e55ef8"
+            ]
+        ]
+    },
+    {
+        "id": "8c2370ad.e44c2",
+        "type": "ui_gauge",
+        "z": "a866b427.05faa8",
+        "name": "Ärvärde CCT1",
+        "group": "6e2fed0c.e12e64",
+        "order": 4,
+        "width": "0",
+        "height": "0",
+        "gtype": "gage",
+        "title": "",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "-5",
+        "max": "40",
+        "colors": [
+            "#0000ff",
+            "#00ff00",
+            "#ff0000"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 714,
+        "y": 153,
+        "wires": []
+    },
+    {
+        "id": "b09a5063.3fa0a",
+        "type": "ui_dropdown",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Läge",
+        "place": "Välj läge",
+        "group": "6e2fed0c.e12e64",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "Avstängd",
+                "value": 0,
+                "type": "num"
+            },
+            {
+                "label": "Jäsning",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "Torrhumling",
+                "value": 2,
+                "type": "num"
+            },
+            {
+                "label": "Lagring",
+                "value": 3,
+                "type": "num"
+            },
+            {
+                "label": "Kylning",
+                "value": 4,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "x": 278,
+        "y": 261,
+        "wires": [
+            [
+                "8a2dbe31.046c8",
+                "276e0a25.f7c4a6",
+                "93110776.cba558"
+            ]
+        ]
+    },
+    {
+        "id": "92c4bbf.43d9648",
+        "type": "ui_numeric",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Börvärde",
+        "group": "6e2fed0c.e12e64",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}} <small>°C</small>",
+        "min": "-3",
+        "max": "30",
+        "step": ".1",
+        "x": 804,
+        "y": 255,
+        "wires": [
+            [
+                "fbe2d8e0.cd2638"
+            ]
+        ]
+    },
+    {
+        "id": "93110776.cba558",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Sätt standardvärde",
+        "func": "var value = msg.payload;\nswitch(value) {\n    case 0:\n        msg.payload = flow.get('curTemp');\n        break;\n    case 1:\n        msg.payload = 22.5;\n        break;\n    case 2:\n        msg.payload = 20.0;\n        break;\n    case 3:\n        msg.payload = 4.0;\n        break;\n    case 4:\n        msg.payload = -1.5;\n        break;\n    default:\n        msg.payload = 127;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 491,
+        "y": 261,
+        "wires": [
+            [
+                "92c4bbf.43d9648"
+            ]
+        ]
+    },
+    {
+        "id": "fbe2d8e0.cd2638",
+        "type": "mqtt out",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/setPoint",
+        "qos": "",
+        "retain": "",
+        "broker": "da78446e.14f798",
+        "x": 1090,
+        "y": 258,
+        "wires": []
+    },
+    {
+        "id": "b13a2b84.883608",
+        "type": "mqtt in",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/setPoint",
+        "qos": "2",
+        "broker": "da78446e.14f798",
+        "x": 120,
+        "y": 89,
+        "wires": [
+            [
+                "1e23db75.519975",
+                "92c4bbf.43d9648"
+            ]
+        ]
+    },
+    {
+        "id": "8796f392.c045b",
+        "type": "ui_switch",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Konkylning",
+        "group": "6e2fed0c.e12e64",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 789,
+        "y": 420,
+        "wires": [
+            [
+                "1bdbe323.f168cd"
+            ]
+        ]
+    },
+    {
+        "id": "186a417f.e0c73f",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Autotrigger cone",
+        "func": "var autoTrigger = flow.get('autoTrigger')||0;\n\nvar value = msg.payload;\nif (value >= 28 && autoTrigger == 1){\n    msg.payload = 1;\n    }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 426,
+        "y": 391,
+        "wires": [
+            [
+                "8796f392.c045b"
+            ]
+        ]
+    },
+    {
+        "id": "1bdbe323.f168cd",
+        "type": "mqtt out",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/CONE",
+        "qos": "",
+        "retain": "",
+        "broker": "da78446e.14f798",
+        "x": 1111,
+        "y": 419,
+        "wires": []
+    },
+    {
+        "id": "38f8f4a6.7a8a1c",
+        "type": "mqtt in",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/CONE",
+        "qos": "2",
+        "broker": "da78446e.14f798",
+        "x": 94,
+        "y": 420,
+        "wires": [
+            [
+                "8796f392.c045b"
+            ]
+        ]
+    },
+    {
+        "id": "dee70583.e08198",
+        "type": "mqtt in",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/cMode",
+        "qos": "2",
+        "broker": "da78446e.14f798",
+        "x": 91,
+        "y": 262,
+        "wires": [
+            [
+                "48ddea48.5ba6f4"
+            ]
+        ]
+    },
+    {
+        "id": "30eb5add.3e56b6",
+        "type": "ui_date_picker",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Dag",
+        "group": "6e2fed0c.e12e64",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "Lägesjustering",
+        "x": 300,
+        "y": 660,
+        "wires": [
+            [
+                "8fc17b3a.555658"
+            ]
+        ]
+    },
+    {
+        "id": "f4344d45.fde7a",
+        "type": "ui_dropdown",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Till nytt läge",
+        "place": "Välj läge",
+        "group": "6e2fed0c.e12e64",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "Avstängd",
+                "value": false,
+                "type": "bool"
+            },
+            {
+                "label": "Jäsning",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "Torrhumling",
+                "value": 2,
+                "type": "num"
+            },
+            {
+                "label": "Lagring",
+                "value": 3,
+                "type": "num"
+            },
+            {
+                "label": "Kylning",
+                "value": 4,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "newMode",
+        "x": 320,
+        "y": 580,
+        "wires": [
+            [
+                "aac69c08.ab573"
+            ]
+        ]
+    },
+    {
+        "id": "cdf0e96.e6d1a18",
+        "type": "ui_switch",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Aktiv",
+        "group": "6e2fed0c.e12e64",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "isActive",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "green",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 341,
+        "y": 540,
+        "wires": [
+            [
+                "aac69c08.ab573"
+            ]
+        ]
+    },
+    {
+        "id": "276e0a25.f7c4a6",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Scheduler",
+        "func": "var mode = msg.payload;\nvar msg = [];\n\nif(mode === 1){\n    //var t = Date.now() + (24*60*60*1000);\n    var t = Date.now() + 10000;\n    var msg1 = { payload: true };\n    var msg2 = { payload: 1 };\n    var msg3 = { payload: 20};\n    var msg4 = { payload: t };\n    msg = [msg1, msg2, msg3, msg4];\nreturn msg;\n}\n",
+        "outputs": "4",
+        "noerr": 0,
+        "x": 100,
+        "y": 560,
+        "wires": [
+            [
+                "cdf0e96.e6d1a18"
+            ],
+            [
+                "f4344d45.fde7a"
+            ],
+            [
+                "9c37170c.99b338"
+            ],
+            [
+                "30eb5add.3e56b6"
+            ]
+        ]
+    },
+    {
+        "id": "9c37170c.99b338",
+        "type": "ui_numeric",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Till ny temp",
+        "group": "6e2fed0c.e12e64",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "newTemp",
+        "format": "{{value}}<small>°C</small>",
+        "min": "-5",
+        "max": "100",
+        "step": "0.1",
+        "x": 320,
+        "y": 620,
+        "wires": [
+            [
+                "aac69c08.ab573"
+            ]
+        ]
+    },
+    {
+        "id": "8a2dbe31.046c8",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Nollställ konkylning",
+        "func": "msg.payload = false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 489,
+        "y": 302,
+        "wires": [
+            [
+                "8796f392.c045b"
+            ]
+        ]
+    },
+    {
+        "id": "8fc17b3a.555658",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Date ISO format",
+        "func": "var timeStamp = msg.payload;\nvar triggerDate = new Date(timeStamp);\nmsg.dates =[];\nmsg.dates.push( triggerDate.toISOString() );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 470,
+        "y": 660,
+        "wires": [
+            [
+                "acdfc372.dfdf4"
+            ]
+        ]
+    },
+    {
+        "id": "acdfc372.dfdf4",
+        "type": "calendar-trigger",
+        "z": "a866b427.05faa8",
+        "name": "Calendar trigger",
+        "x": 650,
+        "y": 660,
+        "wires": [
+            [
+                "482738d7.853d88",
+                "88bdf44d.abbd48"
+            ]
+        ]
+    },
+    {
+        "id": "996fb502.6eac38",
+        "type": "ui_toast",
+        "z": "a866b427.05faa8",
+        "position": "top right",
+        "displayTime": "30",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "",
+        "name": "",
+        "x": 1011,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "482738d7.853d88",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Nice text",
+        "func": "var niceText = \"Justerar nu värden för aktuell tank till Jäsning vid \";\nniceText += flow.get('newTemp') + \" °C.\";\nmsg.payload = niceText;\nmsg.topic = \"Justerar automatiskt\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 830,
+        "y": 660,
+        "wires": [
+            [
+                "996fb502.6eac38",
+                "e97ed7cd.83ff78"
+            ]
+        ]
+    },
+    {
+        "id": "aac69c08.ab573",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Store all settings in Flow variable",
+        "func": "// flow context variable saved as topic name\nflow.set(msg.topic , msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 610,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "88bdf44d.abbd48",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Trigger change",
+        "func": "var msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\n\nmsg1.payload = flow.get('newTemp');\nmsg2.payload = flow.get('newMode');\n\nmsg3.payload = false;\nreturn  [msg1, msg2, msg3];",
+        "outputs": "3",
+        "noerr": 0,
+        "x": 903,
+        "y": 517,
+        "wires": [
+            [
+                "fbe2d8e0.cd2638"
+            ],
+            [
+                "3beb96e0.10da1a"
+            ],
+            [
+                "cdf0e96.e6d1a18"
+            ]
+        ]
+    },
+    {
+        "id": "1e23db75.519975",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Save in Flow variable",
+        "func": "var setPoint = msg.payload;\nif(flow.get('newTemp') !== flow.get('setPoint')){\nflow.set('setPoint', setPoint);\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 492,
+        "y": 35,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3705b236.574dbe",
+        "type": "file",
+        "z": "a866b427.05faa8",
+        "name": "Loggfil på hallonpaj Desktop",
+        "filename": "/home/pi/Desktop/logfile.txt",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "x": 949,
+        "y": 53,
+        "wires": []
+    },
+    {
+        "id": "c71399a0.097518",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Data format",
+        "func": "var load = msg.payload;\nvar nowDate = new Date();\nmsg.payload = nowDate +\":\"+load;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 721,
+        "y": 69,
+        "wires": [
+            [
+                "3705b236.574dbe"
+            ]
+        ]
+    },
+    {
+        "id": "3beb96e0.10da1a",
+        "type": "mqtt out",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "topic": "CCT1/cMode",
+        "qos": "",
+        "retain": "",
+        "broker": "da78446e.14f798",
+        "x": 1112,
+        "y": 469,
+        "wires": []
+    },
+    {
+        "id": "c40829ff.e55ef8",
+        "type": "debug",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 864,
+        "y": 182,
+        "wires": []
+    },
+    {
+        "id": "1f5d44bf.324c8b",
+        "type": "rbe",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "x": 519,
+        "y": 124,
+        "wires": [
+            [
+                "a6f94033.21329"
+            ]
+        ]
+    },
+    {
+        "id": "cd42f91b.5f2878",
+        "type": "ui_switch",
+        "z": "a866b427.05faa8",
+        "name": "",
+        "label": "Konkylning auto",
+        "group": "6e2fed0c.e12e64",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "auto",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 219,
+        "y": 471,
+        "wires": [
+            [
+                "c15c8a17.8cb158"
+            ]
+        ]
+    },
+    {
+        "id": "c15c8a17.8cb158",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Set flow context autoTrigger",
+        "func": "\nflow.set(\"autoTrigger\", msg.payload || false);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 449,
+        "y": 471,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "be983d4f.6f59",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Error detection",
+        "func": "var temperature = msg.payload;\nvar msg1 = {}, msg2 = {};\nmsg.payload = [];\nif (temperature == -127){\n    msg2.payload = \"Kommunikationsproblem med sensor för CCT1\";\n} else {\n    msg1.payload = temperature;\n}\n\nmsg = [msg1, msg2];\n\nreturn msg;",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 360,
+        "y": 203,
+        "wires": [
+            [],
+            [
+                "8443f6ec.75ae18"
+            ]
+        ]
+    },
+    {
+        "id": "8443f6ec.75ae18",
+        "type": "ui_toast",
+        "z": "a866b427.05faa8",
+        "position": "top right",
+        "displayTime": "30",
+        "highlight": "red",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "",
+        "name": "Error",
+        "x": 854,
+        "y": 217,
+        "wires": []
+    },
+    {
+        "id": "a6f94033.21329",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Format data for chart",
+        "func": "var float = msg.payload;\nmsg.payload = float;\nmsg.data = float;\nmsg.topic =\"CCT1\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 734,
+        "y": 113,
+        "wires": [
+            [
+                "8d7ad258.97f53"
+            ]
+        ]
+    },
+    {
+        "id": "48ddea48.5ba6f4",
+        "type": "function",
+        "z": "a866b427.05faa8",
+        "name": "Payload to Integer + change detection",
+        "func": "var integer = parseInt(msg.payload);\nmsg.payload = integer;\nif(integer !== flow.newMode)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 196,
+        "y": 335,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e97ed7cd.83ff78",
+        "type": "e-mail",
+        "z": "a866b427.05faa8",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "name": "hekama74@gmail.com",
+        "dname": "Gmail send",
+        "x": 1036,
+        "y": 712,
+        "wires": []
+    },
+    {
+        "id": "398edb5d.a822f4",
+        "type": "function",
+        "z": "92703c3f.cb5dc",
+        "name": "Save in Global variable",
+        "func": "var su\nvar payLoad = msg.payload;\n\nif(flow.get('newTemp') !== flow.get('setPoint')){\nflow.set('setPoint', pl);\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 137,
+        "wires": [
+            []
+        ]
+    }
+]
